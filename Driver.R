@@ -16,7 +16,7 @@ myData = read.csv("data.csv")
 # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
 myData$bin <- cut(myData$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
 myData$tests <- 1
-mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
+myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 
 # plot a histogram just to see the distribution of those bins
 hist(as.numeric(myData$bin))
