@@ -8,7 +8,16 @@ rm(list=ls())  # Careful! This clears all of R's memory!
 library(dplyr)
 
 # initialize the working directory for the final project
-setwd("/Users/jimgrund/Documents/GWU/Bayesian_Methods/FinalProject/")
+jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/FinalProject/"
+akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian/FinalProject"
+patrick_dir = "/Users/pjordan/Documents/GWU/6450/FinalProject"
+
+for (directory in c("akash_dir", "jim_dir", "patrick_dir")) {
+   if ( dir.exists(jim_dir) ) {
+      setwd(jim_dir)
+      break
+   }
+}
 
 # Load the Breast Cancer dataset
 myData = read.csv("data.csv")
