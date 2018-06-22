@@ -23,7 +23,7 @@ for (directory in c(akash_dir, jim_dir, patrick_dir)) {
 myData = read.csv("data.csv")
 
 # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
-myData$bin <- cut(myData$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
+myData$radius_bin <- cut(myData$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
 myData$tests <- 1
 myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 
@@ -39,12 +39,12 @@ source("Model.R")
 # Otherwise specify as NULL or leave saveName and saveType arguments 
 # out of function calls.
 fileNameRoot = "BreastCancer-POST-" 
-graphFileType = "eps" 
+graphFileType = "png" 
 #------------------------------------------------------------------------------- 
 # Generate the MCMC chain:
 startTime = proc.time()
 mcmcCoda = genMCMC( data=myData , 
-                    zName="diagnosis_code", NName="tests", sName="id", cName="diagnosis",
+                    zName="diagnosis_code", NName="tests", sName="id", cName="radius_bin",
                     numSavedSteps=11000 , saveName=fileNameRoot ,
                     thinSteps=20 )
 stopTime = proc.time()
@@ -65,9 +65,9 @@ summaryInfo = smryMCMC( mcmcCoda , compVal=NULL ,
                         compValDiff=0.0 , saveName=fileNameRoot )
 # Display posterior information:
 plotMCMC( mcmcCoda , data=myData , 
-          zName="diagnosis_code", NName="tests", sName="id", cName="diagnosis",
+          zName="diagnosis_code", NName="tests", sName="id", cName="radius_bin",
           compVal=NULL ,
-          diffCList=list( c("M","B"), c("B","M") ) , 
+          diffCList=list( c(1,2), c(2,3) ) , 
           diffSList=list( c("842302","842517"), c("84501001","84458202") ) , 
           compValDiff=0.0, #ropeDiff = c(-0.05,0.05) ,
           saveName=fileNameRoot , saveType=graphFileType )
