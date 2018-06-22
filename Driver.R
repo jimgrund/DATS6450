@@ -28,7 +28,7 @@ myData$tests <- 1
 myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 
 # plot a histogram just to see the distribution of those bins
-hist(as.numeric(myData$bin))
+hist(as.numeric(myData$radius_bin))
 
 
 #------------------------------------------------------------------------------- 
