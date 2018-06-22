@@ -9,7 +9,7 @@ library(dplyr)
 
 # initialize the working directory for the final project
 jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/FinalProject/"
-akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian/FinalProject"
+akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian_YHuang/project/project"
 patrick_dir = "/Users/pjordan/Documents/GWU/6450/FinalProject"
 
 for (directory in c(akash_dir, jim_dir, patrick_dir)) {
