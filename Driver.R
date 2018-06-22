@@ -12,7 +12,7 @@ jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/FinalProject/"
 akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian/FinalProject"
 patrick_dir = "/Users/pjordan/Documents/GWU/6450/FinalProject"
 
-for (directory in c("akash_dir", "jim_dir", "patrick_dir")) {
+for (directory in c(akash_dir, jim_dir, patrick_dir)) {
    if ( dir.exists(directory) ) {
       setwd(directory)
       break
