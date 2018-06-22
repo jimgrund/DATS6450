@@ -19,7 +19,16 @@
 rm(list = ls())
 
 # Set working directory
-setwd("C:/Users/akash/Desktop/GWU/6450_Bayesian_YHuang/project/project")
+jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/FinalProject/"
+akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian_YHuang/project/project"
+patrick_dir = "/Users/pjordan/Documents/GWU/6450/FinalProject"
+
+for (directory in c(akash_dir, jim_dir, patrick_dir)) {
+   if ( dir.exists(directory) ) {
+      setwd(directory)
+      break
+   }
+}
 #source("DBDA2E-utilities.R")
 
 # Knitr global options
@@ -38,8 +47,8 @@ library(caret)
 #' ### Load Data
 # 
 loadData = function(testResultsFile) {
-  testResultsFile <- data.frame(read.csv(testResultsFile)) # Read and imports the file 
-  return(testResultsFile)
+  df <- data.frame(read.csv(testResultsFile)) # Read and imports the file 
+  return(df)
 }
 
 #' ## Driver
@@ -51,13 +60,13 @@ str(myData)
 
 #' ### Transform Data
 # 
-transformData1 = function(trans1) {
-  trans1 <- subset(myData, select = c(2:32)) 
-  return(trans1)
+transformData = function(data) {
+  trans <- subset(data, select = c(2:32)) 
+  return(trans)
 }
 
 #' ## Driver
-myData <- transformData(trans1)
+myData <- transformData(myData)
 myData <- myData[complete.cases(myData),] # cgeck if trans1 worked correctly
 
 
