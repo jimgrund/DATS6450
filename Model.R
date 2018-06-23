@@ -15,6 +15,35 @@ LoadData = function(filename) {
 }
 
 
+#' ### GLM Feature Importance
+# 
+GLMFeatureImportance = function(data) {
+  transdf <- subset(data, select = c(2:32)) 
+  transdf <- transdf[complete.cases(transdf),]
+  
+  fit_glm <- glm(transdf$diagnosis ~ ., family = 'binomial', data = transdf)
+
+  library(caret)
+  glm_fi <- varImp(fit_glm)
+  return(glm_fi)
+}
+
+
+#' ### Random Forest Feature Importance
+#
+RFFeatureImportance = function(data) {
+  transdf <- subset(data, select = c(2:32)) 
+  transdf <- transdf[complete.cases(transdf),]
+  
+  # Fit a random forest model
+  library(randomForest)
+  fit_rf <- randomForest(transdf$diagnosis ~ . , data = transdf)
+  importance(fit_rf)
+
+  return(fit_rf)
+}
+
+
 #' ### Bin the parameters
 # Create equally distributed bins for the parameters we're interested in
 # Params: dataframe of data
