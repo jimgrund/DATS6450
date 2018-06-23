@@ -63,7 +63,7 @@ graphFileType = "png"
 # Load the Breast Cancer dataset
 myData = read.csv("data.csv")
 
-### RADIUS_MEAN BIN
+#' ### Radius_mean
 # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
 myData$radius_bin <- cut(myData$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
 myData$tests <- 1
@@ -73,7 +73,7 @@ myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 hist(as.numeric(myData$radius_bin), col = 'blue4')
 
 
-### AREA_MEAN BIN
+#' ### Area_mean
 # create three bins on area_mean using 0, 463, 680, 2600 as the breakpoints.  
 myData$area_bin <- cut(myData$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
 
@@ -81,7 +81,7 @@ myData$area_bin <- cut(myData$area_mean, breaks = c(0, 463, 680, 2600), labels =
 hist(as.numeric(myData$area_bin), main="area_bin")
 
 
-### COMPACTNESS_MEAN BIN
+#' ### Compactness_mean
 # create three bins on compactness_mean using 0, 0.075, 0.117, 0.5 as the breakpoints.  
 myData$compactness_bin <- cut(myData$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
 
@@ -89,7 +89,7 @@ myData$compactness_bin <- cut(myData$compactness_mean, breaks = c(0, 0.075, 0.11
 hist(as.numeric(myData$compactness_bin), main="compactness_bin")
 
 
-### SMOOTHNESS_MEAN BIN
+#' ### Smoothness_mean
 # create three bins on smoothness_mean using 0, 0.0894, 0.102, 0.17 as the breakpoints.  
 myData$smoothness_bin <- cut(myData$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
 
@@ -97,7 +97,7 @@ myData$smoothness_bin <- cut(myData$smoothness_mean, breaks = c(0, 0.0894, 0.102
 hist(as.numeric(myData$smoothness_bin), main="smoothness_bin")
 
 
-### CONCAVITY_MEAN BIN
+#' ### Concavity_mean
 # create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
 myData$concavity_bin <- cut(myData$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
 
