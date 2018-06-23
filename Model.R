@@ -24,7 +24,7 @@ GLMFeatureImportance = function(data) {
   fit_glm <- glm(transdf$diagnosis ~ ., family = 'binomial', data = transdf)
 
   library(caret)
-  glm_fi <- varImp(fit_glm)
+  glm_fi <- data.frame(varImp(fit_glm))
   return(glm_fi)
 }
 
@@ -37,10 +37,10 @@ RFFeatureImportance = function(data) {
   
   # Fit a random forest model
   library(randomForest)
-  fit_rf <- randomForest(transdf$diagnosis ~ . , data = transdf)
-  importance(fit_rf)
+  rf_fit <- randomForest(transdf$diagnosis ~ . , data = transdf)
+  rf_fi <- data.frame(importance(rf_fit))
 
-  return(fit_rf)
+  return(rf_fi)
 }
 
 
