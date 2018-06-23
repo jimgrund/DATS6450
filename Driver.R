@@ -63,6 +63,7 @@ graphFileType = "png"
 # Load the Breast Cancer dataset
 myData = read.csv("data.csv")
 
+### RADIUS_MEAN BIN
 # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
 myData$radius_bin <- cut(myData$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
 myData$tests <- 1
@@ -70,6 +71,17 @@ myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 
 # plot a histogram just to see the distribution of those bins
 hist(as.numeric(myData$radius_bin), col = 'blue4')
+
+
+### AREA_MEAN BIN
+# create three bins on area_mean using 0, 12.25, 14.75, 30 as the breakpoints.  
+myData$area_bin <- cut(myData$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
+myData$tests <- 1
+myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
+
+# plot a histogram just to see the distribution of those bins
+hist(as.numeric(myData$area_bin), main="area_bin")
+
 
 
 #'#######################################
