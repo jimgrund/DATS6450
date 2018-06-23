@@ -48,17 +48,29 @@ for (directory in c(akash_dir, jim_dir, patrick_dir)) {
 # Load the relevant model into R's working memory:
 source("Model.R")
 
+interested_parameter = "area_bin"
+
+
+#' ### Graph Options
+# Optional: Specify filename root and graphical format for saving output.
+# Otherwise specify as NULL or leave saveName and saveType arguments 
+# out of function calls.
+fileNameRoot = paste(interested_perimeter,"_")
+graphFileType = "png" 
+
+
 #'#######################################
 
 #' ## Data Load & Tidy
 
 filename = "data.csv"
 
-
-interested_parameter = "radius_bin"
-
 # Load the Breast Cancer dataset
 myData = LoadData(filename)
+
+# Run Feature Importance to identify which features to analyze
+glm_fi = GLMFeatureImportance(myData)
+rf_fi = RFFeatureImportance(myData)
 
 # Bin the various columns that we may want to model with
 myData = BinData(myData)
@@ -72,14 +84,6 @@ myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 # plot the distribution of the interested_parameter to show the 
 # distribution of B vs M in each of the constructed bins
 PlotHistogram(myData, interested_parameter)
-
-#' ### Graph Options
-
-# Optional: Specify filename root and graphical format for saving output.
-# Otherwise specify as NULL or leave saveName and saveType arguments 
-# out of function calls.
-fileNameRoot = paste(interested_perimeter,"_")
-graphFileType = "png" 
 
 
 #' ## MCMC Chain
