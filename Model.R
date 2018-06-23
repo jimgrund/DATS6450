@@ -60,6 +60,14 @@ PlotHistogram = function(df, param) {
   barplot(bartable, xlab = param, ylab = "Frequency", main = "Stacked Barchart of Frequency vs Diagnosis",
           col = c("Purple", "Gold"), legend = c('B','M'), cex.lab = 1.5, 
           cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
+  
+    
+  # define filename to save pdf as
+  filename<-paste(paste(param,"_hist"), ".png",sep="")
+  
+  # save a copy of the plot
+  dev.copy(png,filename);
+  dev.off();
 }
 
 
