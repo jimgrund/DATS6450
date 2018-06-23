@@ -70,7 +70,11 @@ myData$tests <- 1
 myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 
 # plot a histogram just to see the distribution of those bins
-hist(as.numeric(myData$radius_bin), col = 'blue4')
+bartable <- table(myData$diagnosis_code, myData$radius_bin)
+barplot(bartable, xlab = "Radius Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
+        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
+        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
+#hist(as.numeric(myData$radius_bin), col = 'blue4')
 
 
 #' ### Area_mean
@@ -78,7 +82,11 @@ hist(as.numeric(myData$radius_bin), col = 'blue4')
 myData$area_bin <- cut(myData$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
 
 # plot a histogram just to see the distribution of those bins
-hist(as.numeric(myData$area_bin), main="area_bin")
+bartable <- table(myData$diagnosis_code, myData$area_bin)
+barplot(bartable, xlab = "Area Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
+        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
+        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
+#hist(as.numeric(myData$area_bin), main="area_bin")
 
 
 #' ### Compactness_mean
@@ -86,7 +94,11 @@ hist(as.numeric(myData$area_bin), main="area_bin")
 myData$compactness_bin <- cut(myData$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
 
 # plot a histogram just to see the distribution of those bins
-hist(as.numeric(myData$compactness_bin), main="compactness_bin")
+bartable <- table(myData$diagnosis_code, myData$compactness_bin)
+barplot(bartable, xlab = "Compactness Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
+        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
+        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
+#hist(as.numeric(myData$compactness_bin), main="compactness_bin")
 
 
 #' ### Smoothness_mean
@@ -94,7 +106,11 @@ hist(as.numeric(myData$compactness_bin), main="compactness_bin")
 myData$smoothness_bin <- cut(myData$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
 
 # plot a histogram just to see the distribution of those bins
-hist(as.numeric(myData$smoothness_bin), main="smoothness_bin")
+bartable <- table(myData$diagnosis_code, myData$smoothness_bin)
+barplot(bartable, xlab = "Smoothness Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
+        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
+        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
+#hist(as.numeric(myData$smoothness_bin), main="smoothness_bin")
 
 
 #' ### Concavity_mean
@@ -102,21 +118,11 @@ hist(as.numeric(myData$smoothness_bin), main="smoothness_bin")
 myData$concavity_bin <- cut(myData$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
 
 # plot a histogram just to see the distribution of those bins
-hist(as.numeric(myData$concavity_bin), main="concavity_bin")
-
-
-
-#' ### SYMMETRY_MEAN BIN
-# create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
-myData$symmetry_bin <- cut(myData$symmetry_mean, breaks = c(0, 0.167, 0.19, 0.35), labels = 1:3)
-
-# plot a histogram just to see the distribution of those bins
-hist(as.numeric(myData$symmetry_bin), main="symmetry_bin")
-
-
-#' #### Define the parameter to model
-interested_parameter = "symmetry_bin"
-
+bartable <- table(myData$diagnosis_code, myData$concavity_bin)
+barplot(bartable, xlab = "Concavity Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
+        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
+        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
+#hist(as.numeric(myData$concavity_bin), main="concavity_bin")
 #'#######################################
 
 #' ## MCMC Chain
@@ -126,7 +132,7 @@ interested_parameter = "symmetry_bin"
 # Generate the MCMC chain:
 startTime = proc.time()
 mcmcCoda = genMCMC( data=myData , 
-                    zName="diagnosis_code", NName="tests", sName="id", cName=interested_parameter,
+                    zName="diagnosis_code", NName="tests", sName="id", cName="radius_bin",
                     numSavedSteps=11000 , saveName=fileNameRoot ,
                     thinSteps=20 )
 stopTime = proc.time()
@@ -147,7 +153,7 @@ for ( parName in c("omega[1]","omegaO","kappa[1]","kappaO","theta[1]") ) {
 
 # Get summary statistics of chain:
 # summaryInfo = smryMCMC( mcmcCoda , compVal=NULL ,
-#                         diffSVec=c(75, 156, 159) ,
+#                         diffSVec=c(75,156, 159) ,
 #                         diffCVec=c(1,2,3) ,
 #                         compValDiff=0.0 , saveName=fileNameRoot )
 
@@ -155,7 +161,7 @@ for ( parName in c("omega[1]","omegaO","kappa[1]","kappaO","theta[1]") ) {
 
 # Display posterior information:
 plotMCMC( mcmcCoda , data=myData ,
-          zName="diagnosis_code", NName="tests", sName="id", cName=interested_parameter,
+          zName="diagnosis_code", NName="tests", sName="id", cName="radius_bin",
           compVal=NULL ,
           diffCList=list( c(1,2), c(2,3) ) ,
           diffSList=list( c("842302","842517"), c("84501001","84458202") ) ,
