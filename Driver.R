@@ -103,6 +103,20 @@ myData$concavity_bin <- cut(myData$concavity_mean, breaks = c(0, 0.039, 0.106, 0
 
 # plot a histogram just to see the distribution of those bins
 hist(as.numeric(myData$concavity_bin), main="concavity_bin")
+
+
+
+#' ### SYMMETRY_MEAN BIN
+# create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
+myData$symmetry_bin <- cut(myData$symmetry_mean, breaks = c(0, 0.167, 0.19, 0.35), labels = 1:3)
+
+# plot a histogram just to see the distribution of those bins
+hist(as.numeric(myData$symmetry_bin), main="symmetry_bin")
+
+
+#' #### Define the parameter to model
+interested_parameter = "symmetry_bin"
+
 #'#######################################
 
 #' ## MCMC Chain
@@ -112,7 +126,7 @@ hist(as.numeric(myData$concavity_bin), main="concavity_bin")
 # Generate the MCMC chain:
 startTime = proc.time()
 mcmcCoda = genMCMC( data=myData , 
-                    zName="diagnosis_code", NName="tests", sName="id", cName="radius_bin",
+                    zName="diagnosis_code", NName="tests", sName="id", cName=interested_parameter,
                     numSavedSteps=11000 , saveName=fileNameRoot ,
                     thinSteps=20 )
 stopTime = proc.time()
@@ -133,7 +147,7 @@ for ( parName in c("omega[1]","omegaO","kappa[1]","kappaO","theta[1]") ) {
 
 # Get summary statistics of chain:
 # summaryInfo = smryMCMC( mcmcCoda , compVal=NULL ,
-#                         diffSVec=c(75,156, 159) ,
+#                         diffSVec=c(75, 156, 159) ,
 #                         diffCVec=c(1,2,3) ,
 #                         compValDiff=0.0 , saveName=fileNameRoot )
 
@@ -141,7 +155,7 @@ for ( parName in c("omega[1]","omegaO","kappa[1]","kappaO","theta[1]") ) {
 
 # Display posterior information:
 plotMCMC( mcmcCoda , data=myData ,
-          zName="diagnosis_code", NName="tests", sName="id", cName="radius_bin",
+          zName="diagnosis_code", NName="tests", sName="id", cName=interested_parameter,
           compVal=NULL ,
           diffCList=list( c(1,2), c(2,3) ) ,
           diffSList=list( c("842302","842517"), c("84501001","84458202") ) ,
