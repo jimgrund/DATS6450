@@ -132,10 +132,10 @@ for ( parName in c("omega[1]","omegaO","kappa[1]","kappaO","theta[1]") ) {
 #' ### Summary Statistics
 
 # Get summary statistics of chain:
-summaryInfo = smryMCMC( mcmcCoda , compVal=NULL ,
-                        diffSVec=c(75,156, 159,844) ,
-                        diffCVec=c(1,2,3) ,
-                        compValDiff=0.0 , saveName=fileNameRoot )
+# summaryInfo = smryMCMC( mcmcCoda , compVal=NULL ,
+#                         diffSVec=c(75,156, 159) ,
+#                         diffCVec=c(1,2,3) ,
+#                         compValDiff=0.0 , saveName=fileNameRoot )
 
 #' ### Graph
 
