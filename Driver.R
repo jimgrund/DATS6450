@@ -53,7 +53,7 @@ source("Model.R")
 # Optional: Specify filename root and graphical format for saving output.
 # Otherwise specify as NULL or leave saveName and saveType arguments 
 # out of function calls.
-fileNameRoot = interested_perimeter 
+fileNameRoot = paste(interested_perimeter,"_")
 graphFileType = "png" 
 
 #'#######################################
