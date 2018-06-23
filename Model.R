@@ -303,7 +303,7 @@ plotMCMC = function( codaSamples ,
                                  compVal=compValDiff , ROPE=ropeDiff , 
                                  cex.main=1.25 , cex.lab=1.25 , 
                                  xlab=bquote("Difference of "*omega*"'s") , 
-                                 main=paste( 
+                                 main=paste( cName, " ",
                                    levels(myData[[cName]])[diffCVec[t1Idx]] ,
                                    "-",
                                    levels(myData[[cName]])[diffCVec[t2Idx]] ) )
@@ -366,7 +366,7 @@ plotMCMC = function( codaSamples ,
                                  compVal=compValDiff , ROPE=ropeDiff , 
                                  cex.main=0.67 , cex.lab=1.25 , 
                                  xlab=bquote("Difference of "*theta*"'s") , 
-                                 main=paste( 
+                                 main=paste(sName, " ", 
                                    s[diffSVec[t1Idx]] , 
                                    " (",c[diffSVec[t1Idx]],")" ,
                                    "\n -",
