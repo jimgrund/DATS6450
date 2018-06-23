@@ -1,7 +1,52 @@
-# Jags-Ybinom-XnomSsubjCcat-MbinomBetaOmegaKappa.R 
-# Accompanies the book:
-#   Kruschke, J. K. (2014). Doing Bayesian Data Analysis: 
-#   A Tutorial with R, JAGS, and Stan. 2nd Edition. Academic Press / Elsevier.
+#
+#' ---
+#' title: 6450 BayesianMethods Project (model File)
+#' author: TeamPAJ
+#' date: 25June2018
+#' output:
+#'    html_document:
+#'      toc: true
+#'      highlight: haddock
+#' ---
+
+# 
+#
+#
+
+#'#######################################
+
+#' ## Environment Preparation
+
+# Remove any objects in the Environment
+rm(list = ls())
+
+# Closes all of R's graphics windows
+graphics.off()
+
+# Knitr global options
+library(knitr)
+opts_chunk$set(eval = TRUE, echo = TRUE, warning = FALSE,
+               tidy = TRUE, results = "hold", cache = TRUE)
+
+# Load Necessary Libraries
+suppressPackageStartupMessages(library(dplyr))
+
+# Set the overall seed for reproducibility
+set.seed(6450)
+
+# initialize the working directory for the final project
+jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/Final-Project/"
+akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian_YHuang/project/project"
+patrick_dir = "/Users/pjordan/Documents/GWU/6450/FinalProject"
+
+for (directory in c(akash_dir, jim_dir, patrick_dir)) {
+  if ( dir.exists(directory) ) {
+    setwd(directory)
+    break
+  }
+}
+
+
 source("DBDA2E-utilities.R")
 #===============================================================================
 
@@ -14,46 +59,57 @@ LoadData = function(filename) {
   return(df)
 }
 
-#' ### Bin By Specific Feature
-# Create bin in the dataframe for a parameter
-# Params: dataframe, selected parameter, cutpoint1 and cutpoint2 for the data
-# Returns: dataframe with new bin'd column added.  column name is param name + "_bin"
-BinByFeature = function(df, param, cutPoint1, cutPoint2) {
-  maxVal <- max(df[param])
-  minVal <- min(df[param])
-  binColName <- paste(param,"_bin",sep="")
-  df[binColName] <- cut(df[[param]], breaks = c(minVal, cutPoint1, cutPoint2, maxVal), labels = 1:3)
-  
-  return(df)
-}
-
 
 #' ### GLM Feature Importance
-# 
-GLMFeatureImportance = function(df) {
-  transdf <- subset(df, select = c(2:32)) 
-  transdf <- transdf[complete.cases(transdf),]
-  
-  fit_glm <- glm(transdf$diagnosis ~ ., family = 'binomial', data = transdf)
 
-  library(caret)
-  glm_fi <- data.frame(varImp(fit_glm))
-  return(glm_fi)
-}
-
-
-#' ### Random Forest Feature Importance
+#' # Random Forest Feature Importance
 #
-RFFeatureImportance = function(df) {
-  transdf <- subset(df, select = c(2:32)) 
+RFFeatureImportance = function(data) {
+  transdf <- subset(data, select = c(2:32)) 
   transdf <- transdf[complete.cases(transdf),]
   
   # Fit a random forest model
   library(randomForest)
   rf_fit <- randomForest(transdf$diagnosis ~ . , data = transdf)
   rf_fi <- data.frame(importance(rf_fit))
-
+  
   return(rf_fi)
+}
+
+
+#' ### Bin the parameters
+# Create equally distributed bins for the parameters we're interested in
+# Params: dataframe of data
+BinData = function(df) {
+  #' ### Bin Radius_mean
+  # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
+  df$radius_bin <- cut(df$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
+  
+  #' ### Bin Area_mean
+  # create three bins on area_mean using 0, 463, 680, 2600 as the breakpoints.  
+  df$area_bin <- cut(df$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
+  
+  #' ### Bin Compactness_mean
+  # create three bins on compactness_mean using 0, 0.075, 0.117, 0.5 as the breakpoints.  
+  df$compactness_bin <- cut(df$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
+  
+  #' ### Smoothness_mean
+  # create three bins on smoothness_mean using 0, 0.0894, 0.102, 0.17 as the breakpoints.  
+  df$smoothness_bin <- cut(df$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
+  
+  #' ### Concavity_mean
+  # create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
+  df$concavity_bin <- cut(df$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
+  
+  #' #' ### CONCAVE.POINTS_MEAN BIN
+  #' # create three bins on concavity_mean using 0, 0.025, 0.06, 0.25 as the breakpoints.  
+  #' df$concave.points_bin <- cut(df$concave.points_mean, breaks = c(0, 0.025, 0.06, 0.25), labels = 1:3)
+  
+  #' ### SYMMETRY_MEAN BIN
+  # create three bins on concavity_mean using 0, 0.167, 0.19, 0.35 as the breakpoints.  
+  df$symmetry_bin <- cut(df$symmetry_mean, breaks = c(0, 0.167, 0.19, 0.35), labels = 1:3)
+  
+  return(df)
 }
 
 
@@ -67,7 +123,7 @@ PlotHistogram = function(df, param) {
           col = c("Purple", "Gold"), legend = c('B','M'), cex.lab = 1.5, 
           cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
   
-    
+  
   # define filename to save pdf as
   filename<-paste(paste(param,"_hist"), ".png",sep="")
   
@@ -112,24 +168,24 @@ genMCMC = function( data , zName="z" , NName="N" , sName="s" , cName="c" ,
   # THE MODEL.
   modelString = "
   model {
-    for ( sIdx in 1:Nsubj ) {
-      z[sIdx] ~ dbin( theta[sIdx] , N[sIdx] )
-      theta[sIdx] ~ dbeta( omega[c[sIdx]]*(kappa[c[sIdx]]-2)+1 , 
-                           (1-omega[c[sIdx]])*(kappa[c[sIdx]]-2)+1 ) 
-    }
-    for ( cIdx in 1:Ncat ) {
-      omega[cIdx] ~ dbeta( omegaO*(kappaO-2)+1 , 
-                           (1-omegaO)*(kappaO-2)+1 )
-      kappa[cIdx] <- kappaMinusTwo[cIdx] + 2
-      kappaMinusTwo[cIdx] ~ dgamma( 0.01 , 0.01 ) # mean=1 , sd=10 (generic vague)
-    }
-    omegaO ~ dbeta( 1.0 , 1.0 ) 
-    #omegaO ~ dbeta( 1.025 , 1.075 ) # mode=0.25 , concentration=2.1
-    kappaO <- kappaMinusTwoO + 2
-    kappaMinusTwoO ~ dgamma( 0.01 , 0.01 )  # mean=1 , sd=10 (generic vague)
-    #kappaMinusTwoO ~ dgamma( 1.01005 , 0.01005012 )  # mode=1 , sd=100
-    #kappaMinusTwoO ~ dgamma( 1.105125 , 0.1051249 )  # mode=1 , sd=10
-    #kappaMinusTwoO ~ dgamma( 1.105125 , 0.01051249 )  # mode=10 , sd=100
+  for ( sIdx in 1:Nsubj ) {
+  z[sIdx] ~ dbin( theta[sIdx] , N[sIdx] )
+  theta[sIdx] ~ dbeta( omega[c[sIdx]]*(kappa[c[sIdx]]-2)+1 , 
+  (1-omega[c[sIdx]])*(kappa[c[sIdx]]-2)+1 ) 
+  }
+  for ( cIdx in 1:Ncat ) {
+  omega[cIdx] ~ dbeta( omegaO*(kappaO-2)+1 , 
+  (1-omegaO)*(kappaO-2)+1 )
+  kappa[cIdx] <- kappaMinusTwo[cIdx] + 2
+  kappaMinusTwo[cIdx] ~ dgamma( 0.01 , 0.01 ) # mean=1 , sd=10 (generic vague)
+  }
+  omegaO ~ dbeta( 1.0 , 1.0 ) 
+  #omegaO ~ dbeta( 1.025 , 1.075 ) # mode=0.25 , concentration=2.1
+  kappaO <- kappaMinusTwoO + 2
+  kappaMinusTwoO ~ dgamma( 0.01 , 0.01 )  # mean=1 , sd=10 (generic vague)
+  #kappaMinusTwoO ~ dgamma( 1.01005 , 0.01005012 )  # mode=1 , sd=100
+  #kappaMinusTwoO ~ dgamma( 1.105125 , 0.1051249 )  # mode=1 , sd=10
+  #kappaMinusTwoO ~ dgamma( 1.105125 , 0.01051249 )  # mode=10 , sd=100
   }
   " # close quote for modelString
   writeLines( modelString , con="TEMPmodel.txt" )
@@ -384,9 +440,9 @@ plotMCMC = function( codaSamples ,
                                  cex.main=1.25 , cex.lab=1.25 , 
                                  xlab=bquote("Difference of "*omega*"'s") , 
                                  main=paste( cName, " ",
-                                   levels(myData[[cName]])[diffCVec[t1Idx]] ,
-                                   "-",
-                                   levels(myData[[cName]])[diffCVec[t2Idx]] ) )
+                                             levels(myData[[cName]])[diffCVec[t1Idx]] ,
+                                             "-",
+                                             levels(myData[[cName]])[diffCVec[t2Idx]] ) )
           }
         }
       }
@@ -395,7 +451,7 @@ plotMCMC = function( codaSamples ,
       }
     }
   }
-
+  
   # Plot individual theta's and differences:
   if ( !is.null(diffSList) ) {
     for ( compIdx in 1:length(diffSList) ) {
@@ -447,11 +503,11 @@ plotMCMC = function( codaSamples ,
                                  cex.main=0.67 , cex.lab=1.25 , 
                                  xlab=bquote("Difference of "*theta*"'s") , 
                                  main=paste(sName, " ", 
-                                   s[diffSVec[t1Idx]] , 
-                                   " (",c[diffSVec[t1Idx]],")" ,
-                                   "\n -",
-                                   s[diffSVec[t2Idx]] , 
-                                   " (",c[diffSVec[t2Idx]],")" ) )
+                                            s[diffSVec[t1Idx]] , 
+                                            " (",c[diffSVec[t1Idx]],")" ,
+                                            "\n -",
+                                            s[diffSVec[t2Idx]] , 
+                                            " (",c[diffSVec[t2Idx]],")" ) )
             points( z[diffSVec[t1Idx]]/N[diffSVec[t1Idx]]
                     - z[diffSVec[t2Idx]]/N[diffSVec[t2Idx]] , 0 , 
                     pch="+" , col="red" , cex=3 )
