@@ -14,11 +14,24 @@ LoadData = function(filename) {
   return(df)
 }
 
+#' ### Bin By Specific Feature
+# Create bin in the dataframe for a parameter
+# Params: dataframe, selected parameter, cutpoint1 and cutpoint2 for the data
+# Returns: dataframe with new bin'd column added.  column name is param name + "_bin"
+BinByFeature = function(df, param, cutPoint1, cutPoint2) {
+  maxVal <- max(df[param])
+  minVal <- min(df[param])
+  binColName <- paste(param,"_bin",sep="")
+  df[binColName] <- cut(df[[param]], breaks = c(minVal, cutPoint1, cutPoint2, maxVal), labels = 1:3)
+  
+  return(df)
+}
+
 
 #' ### GLM Feature Importance
 # 
-GLMFeatureImportance = function(data) {
-  transdf <- subset(data, select = c(2:32)) 
+GLMFeatureImportance = function(df) {
+  transdf <- subset(df, select = c(2:32)) 
   transdf <- transdf[complete.cases(transdf),]
   
   fit_glm <- glm(transdf$diagnosis ~ ., family = 'binomial', data = transdf)
@@ -31,8 +44,8 @@ GLMFeatureImportance = function(data) {
 
 #' ### Random Forest Feature Importance
 #
-RFFeatureImportance = function(data) {
-  transdf <- subset(data, select = c(2:32)) 
+RFFeatureImportance = function(df) {
+  transdf <- subset(df, select = c(2:32)) 
   transdf <- transdf[complete.cases(transdf),]
   
   # Fit a random forest model
@@ -41,42 +54,6 @@ RFFeatureImportance = function(data) {
   rf_fi <- data.frame(importance(rf_fit))
 
   return(rf_fi)
-}
-
-
-#' ### Bin the parameters
-# Create equally distributed bins for the parameters we're interested in
-# Params: dataframe of data
-BinData = function(df) {
-  #' ### Bin Radius_mean
-  # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
-  df$radius_bin <- cut(df$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
-  
-  #' ### Bin Area_mean
-  # create three bins on area_mean using 0, 463, 680, 2600 as the breakpoints.  
-  df$area_bin <- cut(df$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
-  
-  #' ### Bin Compactness_mean
-  # create three bins on compactness_mean using 0, 0.075, 0.117, 0.5 as the breakpoints.  
-  df$compactness_bin <- cut(df$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
-  
-  #' ### Smoothness_mean
-  # create three bins on smoothness_mean using 0, 0.0894, 0.102, 0.17 as the breakpoints.  
-  df$smoothness_bin <- cut(df$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
-  
-  #' ### Concavity_mean
-  # create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
-  df$concavity_bin <- cut(df$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
-  
-  #' #' ### CONCAVE.POINTS_MEAN BIN
-  #' # create three bins on concavity_mean using 0, 0.025, 0.06, 0.25 as the breakpoints.  
-  #' df$concave.points_bin <- cut(df$concave.points_mean, breaks = c(0, 0.025, 0.06, 0.25), labels = 1:3)
-  
-  #' ### SYMMETRY_MEAN BIN
-  # create three bins on concavity_mean using 0, 0.167, 0.19, 0.35 as the breakpoints.  
-  df$symmetry_bin <- cut(df$symmetry_mean, breaks = c(0, 0.167, 0.19, 0.35), labels = 1:3)
-  
-  return(df)
 }
 
 
