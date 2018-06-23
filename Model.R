@@ -5,6 +5,67 @@
 source("DBDA2E-utilities.R")
 #===============================================================================
 
+#' ### Load the csv 
+# Load the csv into a dataframe and return that dataframe
+# Params:  filename of the csv to load
+# Returns: dataframe containing the data
+LoadData = function(filename) {
+  df = read.csv(filename)
+  return(df)
+}
+
+
+#' ### Bin the parameters
+# Create equally distributed bins for the parameters we're interested in
+# Params: dataframe of data
+BinData = function(df) {
+  #' ### Bin Radius_mean
+  # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
+  df$radius_bin <- cut(df$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
+  
+  #' ### Bin Area_mean
+  # create three bins on area_mean using 0, 463, 680, 2600 as the breakpoints.  
+  df$area_bin <- cut(df$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
+  
+  #' ### Bin Compactness_mean
+  # create three bins on compactness_mean using 0, 0.075, 0.117, 0.5 as the breakpoints.  
+  df$compactness_bin <- cut(df$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
+  
+  #' ### Smoothness_mean
+  # create three bins on smoothness_mean using 0, 0.0894, 0.102, 0.17 as the breakpoints.  
+  df$smoothness_bin <- cut(df$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
+  
+  #' ### Concavity_mean
+  # create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
+  df$concavity_bin <- cut(df$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
+  
+  #' #' ### CONCAVE.POINTS_MEAN BIN
+  #' # create three bins on concavity_mean using 0, 0.025, 0.06, 0.25 as the breakpoints.  
+  #' df$concave.points_bin <- cut(df$concave.points_mean, breaks = c(0, 0.025, 0.06, 0.25), labels = 1:3)
+  
+  #' ### SYMMETRY_MEAN BIN
+  # create three bins on concavity_mean using 0, 0.167, 0.19, 0.35 as the breakpoints.  
+  df$symmetry_bin <- cut(df$symmetry_mean, breaks = c(0, 0.167, 0.19, 0.35), labels = 1:3)
+  
+  return(df)
+}
+
+
+#' ### Plot histogram
+# Plot a stacked histogram to show ratio of malignant to benign in each bin
+# Params: dataframe, column to hist on
+PlotHistogram = function(df, param) {
+  # plot a histogram just to see the distribution of those bins
+  bartable <- table(df$diagnosis_code, df[[param]])
+  barplot(bartable, xlab = param, ylab = "Frequency", main = "Stacked Barchart of Frequency vs Diagnosis",
+          col = c("Purple", "Gold"), legend = c('B','M'), cex.lab = 1.5, 
+          cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
+}
+
+
+
+#' genMCMC 
+# returns coda data
 genMCMC = function( data , zName="z" , NName="N" , sName="s" , cName="c" ,
                     numSavedSteps=50000 , saveName=NULL , thinSteps=1 ,
                     runjagsMethod=runjagsMethodDefault , 
@@ -120,6 +181,9 @@ genMCMC = function( data , zName="z" , NName="N" , sName="s" , cName="c" ,
 
 #===============================================================================
 
+
+#' smryMCMC
+# returns summary output of coda
 smryMCMC = function(  codaSamples , compVal=0.5 , rope=NULL , 
                       diffSVec=NULL , diffCVec=NULL , 
                       compValDiff=0.0 , ropeDiff=NULL , 
@@ -191,6 +255,8 @@ smryMCMC = function(  codaSamples , compVal=0.5 , rope=NULL ,
 
 #===============================================================================
 
+#' plotMCMC
+# plot the analysis of the coda data
 plotMCMC = function( codaSamples , 
                      data , zName="z" , NName="N" , sName="s" , cName="c" ,
                      compVal=0.5 , rope=NULL , 
