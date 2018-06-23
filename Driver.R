@@ -48,14 +48,6 @@ for (directory in c(akash_dir, jim_dir, patrick_dir)) {
 # Load the relevant model into R's working memory:
 source("Model.R")
 
-#' ### Graph Options
-
-# Optional: Specify filename root and graphical format for saving output.
-# Otherwise specify as NULL or leave saveName and saveType arguments 
-# out of function calls.
-fileNameRoot = paste(interested_perimeter,"_")
-graphFileType = "png" 
-
 #'#######################################
 
 #' ## Data Load & Tidy
@@ -81,6 +73,13 @@ myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 # distribution of B vs M in each of the constructed bins
 PlotHistogram(myData, interested_parameter)
 
+#' ### Graph Options
+
+# Optional: Specify filename root and graphical format for saving output.
+# Otherwise specify as NULL or leave saveName and saveType arguments 
+# out of function calls.
+fileNameRoot = paste(interested_perimeter,"_")
+graphFileType = "png" 
 
 
 #' ## MCMC Chain
