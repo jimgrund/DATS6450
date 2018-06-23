@@ -74,14 +74,35 @@ hist(as.numeric(myData$radius_bin), col = 'blue4')
 
 
 ### AREA_MEAN BIN
-# create three bins on area_mean using 0, 12.25, 14.75, 30 as the breakpoints.  
+# create three bins on area_mean using 0, 463, 680, 2600 as the breakpoints.  
 myData$area_bin <- cut(myData$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
 
 # plot a histogram just to see the distribution of those bins
 hist(as.numeric(myData$area_bin), main="area_bin")
 
 
+### COMPACTNESS_MEAN BIN
+# create three bins on compactness_mean using 0, 0.075, 0.117, 0.5 as the breakpoints.  
+myData$compactness_bin <- cut(myData$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
 
+# plot a histogram just to see the distribution of those bins
+hist(as.numeric(myData$compactness_bin), main="compactness_bin")
+
+
+### SMOOTHNESS_MEAN BIN
+# create three bins on smoothness_mean using 0, 0.0894, 0.102, 0.17 as the breakpoints.  
+myData$smoothness_bin <- cut(myData$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
+
+# plot a histogram just to see the distribution of those bins
+hist(as.numeric(myData$smoothness_bin), main="smoothness_bin")
+
+
+### CONCAVITY_MEAN BIN
+# create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
+myData$concavity_bin <- cut(myData$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
+
+# plot a histogram just to see the distribution of those bins
+hist(as.numeric(myData$concavity_bin), main="concavity_bin")
 #'#######################################
 
 #' ## MCMC Chain
