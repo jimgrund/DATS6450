@@ -34,7 +34,7 @@ suppressPackageStartupMessages(library(dplyr))
 set.seed(6450)
 
 # initialize the working directory for the final project
-jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/FinalProject/"
+jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/Final-Project/"
 akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian_YHuang/project/project"
 patrick_dir = "/Users/pjordan/Documents/GWU/6450/FinalProject"
 
@@ -60,99 +60,31 @@ graphFileType = "png"
 
 #' ## Data Load & Tidy
 
-# Load the Breast Cancer dataset
-myData = read.csv("data.csv")
+filename = "data.csv"
 
-#' ### Radius_mean
-# create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
-myData$radius_bin <- cut(myData$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
+
+interested_parameter = "radius_bin"
+
+# Load the Breast Cancer dataset
+myData = LoadData(filename)
+
+# Bin the various columns that we may want to model with
+myData = BinData(myData)
+
+# every patient has performed one test.
 myData$tests <- 1
+
+# construct a column for diagnosis code where Benign and Malignant are set as 0,1
 myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
 
-# plot a histogram just to see the distribution of those bins
-bartable <- table(myData$diagnosis_code, myData$radius_bin)
-barplot(bartable, xlab = "Radius Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
-        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
-        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
-#hist(as.numeric(myData$radius_bin), col = 'blue4')
+# plot the distribution of the interested_parameter to show the 
+# distribution of B vs M in each of the constructed bins
+PlotHistogram(myData, interested_parameter)
 
-
-#' ### Area_mean
-# create three bins on area_mean using 0, 463, 680, 2600 as the breakpoints.  
-myData$area_bin <- cut(myData$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
-
-# plot a histogram just to see the distribution of those bins
-bartable <- table(myData$diagnosis_code, myData$area_bin)
-barplot(bartable, xlab = "Area Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
-        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
-        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
-#hist(as.numeric(myData$area_bin), main="area_bin")
-
-
-#' ### Compactness_mean
-# create three bins on compactness_mean using 0, 0.075, 0.117, 0.5 as the breakpoints.  
-myData$compactness_bin <- cut(myData$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
-
-# plot a histogram just to see the distribution of those bins
-bartable <- table(myData$diagnosis_code, myData$compactness_bin)
-barplot(bartable, xlab = "Compactness Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
-        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
-        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
-#hist(as.numeric(myData$compactness_bin), main="compactness_bin")
-
-
-#' ### Smoothness_mean
-# create three bins on smoothness_mean using 0, 0.0894, 0.102, 0.17 as the breakpoints.  
-myData$smoothness_bin <- cut(myData$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
-
-# plot a histogram just to see the distribution of those bins
-bartable <- table(myData$diagnosis_code, myData$smoothness_bin)
-barplot(bartable, xlab = "Smoothness Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
-        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
-        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
-#hist(as.numeric(myData$smoothness_bin), main="smoothness_bin")
-
-
-#' ### Concavity_mean
-# create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
-myData$concavity_bin <- cut(myData$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
-
-# plot a histogram just to see the distribution of those bins
-bartable <- table(myData$diagnosis_code, myData$concavity_bin)
-barplot(bartable, xlab = "Concavity Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
-        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
-        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
-#hist(as.numeric(myData$concavity_bin), main="concavity_bin")
-#'#######################################
-
-
-#' ### CONCAVE.POINTS_MEAN BIN
-# create three bins on concavity_mean using 0, 0.025, 0.06, 0.25 as the breakpoints.  
-myData$concave.points_bin <- cut(myData$concave.points_mean, breaks = c(0, 0.025, 0.06, 0.25), labels = 1:3)
-
-# plot a histogram just to see the distribution of those bins
-bartable <- table(myData$diagnosis_code, myData$concavity.points_bin)
-barplot(bartable, xlab = "Concave.points Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
-        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
-        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
-#hist(as.numeric(myData$concave.points_bin), main="concave.points_bin")
-
-
-#' ### SYMMETRY_MEAN BIN
-# create three bins on concavity_mean using 0, 0.167, 0.19, 0.35 as the breakpoints.  
-myData$symmetry_bin <- cut(myData$symmetry_mean, breaks = c(0, 0.167, 0.19, 0.35), labels = 1:3)
-
-# plot a histogram just to see the distribution of those bins
-bartable <- table(myData$diagnosis_code, myData$symmetry_bin)
-barplot(bartable, xlab = "Symmetry Bin Number", ylab = "Frequency", main = "Stacked barchart of Frequency vs Diagnosis", 
-        col = c("Purple", "Gold"), legend = rownames(bartable), cex.lab = 1.5, 
-        cex.axis = 1.5, cex.main = 1.5, cex.sub = 1.5)
-#hist(as.numeric(myData$symmetry_bin), main="symmetry_bin")
 
 
 #' ## MCMC Chain
 
-interested_parameter = "radius_bin"
 
 #' ### Generate
 
@@ -191,7 +123,7 @@ for ( parName in c("omega[1]","omegaO","kappa[1]","kappaO","theta[1]") ) {
 plotMCMC( mcmcCoda , data=myData ,
           zName="diagnosis_code", NName="tests", sName="id", cName=interested_parameter,
           compVal=NULL ,
-          diffCList=list( c(1,2), c(2,3) ) ,
+          diffCList=list( c(1,2), c(2,3), c(1,3) ) ,
           diffSList=list( c("842302","926682"), c("8510653","84501001"), c("855563","91376702") ) ,
           compValDiff=0.0, ropeDiff = c(-0.05,0.05) ,
           saveName=fileNameRoot , saveType=graphFileType )
