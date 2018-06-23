@@ -1,3 +1,4 @@
+
 #' ---
 #' title: 6450 BayesianMethods Project (Driver File)
 #' author: TeamPAJ
@@ -33,6 +34,7 @@ suppressPackageStartupMessages(library(dplyr))
 # Set the overall seed for reproducibility
 set.seed(6450)
 
+#' ### Working Directory
 # initialize the working directory for the final project
 jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/Final-Project/"
 akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian_YHuang/project/project"
@@ -46,18 +48,8 @@ for (directory in c(akash_dir, jim_dir, patrick_dir)) {
 }
 
 # Load the relevant model into R's working memory:
-source("Model.R")
-
-interested_parameter = "area_bin"
-
-
-#' ### Graph Options
-# Optional: Specify filename root and graphical format for saving output.
-# Otherwise specify as NULL or leave saveName and saveType arguments 
-# out of function calls.
-fileNameRoot = paste(interested_perimeter,"_")
-graphFileType = "png" 
-
+source("model.R")
+source("DBDA2E-utilities.R")
 
 #'#######################################
 
@@ -65,26 +57,40 @@ graphFileType = "png"
 
 filename = "data.csv"
 
+#' ### Load Data
 # Load the Breast Cancer dataset
 myData = LoadData(filename)
 
-# Run Feature Importance to identify which features to analyze
-glm_fi = GLMFeatureImportance(myData)
-rf_fi = RFFeatureImportance(myData)
+#' ### Feature Importance
+rf_fi = RFFeatureImportance(myData) # Run Feature Importance to identify which features to analyze
 
-# Bin the various columns that we may want to model with
-myData = BinData(myData)
+#' ### Bins
+myData = BinData(myData) # Bin the various columns that we may want to model with
 
-# every patient has performed one test.
-myData$tests <- 1
+#' ### Test Count
+myData$tests <- 1 # Every patient has performed one test.
 
-# construct a column for diagnosis code where Benign and Malignant are set as 0,1
-myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1))
+#' ### Dependent Variable Code
+myData <- mutate(myData, diagnosis_code = ifelse(diagnosis == 'B',0,1)) # Construct a column for diagnosis code where Benign and Malignant are set as 0,1
 
+#' ### Interested Parameter
+interested_parameter = "area_bin" # Define Interested Parameter
+
+#' ### Graph Options
+# Optional: Specify filename root and graphical format for saving output.
+# Otherwise specify as NULL or leave saveName and saveType arguments 
+# out of function calls.
+#fileNameRoot = interested_perimeter
+fileNameRoot = paste(interested_parameter,"_")
+graphFileType = "png" 
+
+#' ### Plot Stacked Histogram
 # plot the distribution of the interested_parameter to show the 
 # distribution of B vs M in each of the constructed bins
 PlotHistogram(myData, interested_parameter)
 
+
+#'#######################################
 
 #' ## MCMC Chain
 
