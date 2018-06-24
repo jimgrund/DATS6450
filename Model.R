@@ -1,6 +1,6 @@
-#
+
 #' ---
-#' title: 6450 BayesianMethods Project (model File)
+#' title: 6450 BayesianMethods Project (Model File)
 #' author: TeamPAJ
 #' date: 25June2018
 #' output:
@@ -34,6 +34,7 @@ suppressPackageStartupMessages(library(dplyr))
 # Set the overall seed for reproducibility
 set.seed(6450)
 
+#' ### Working Directory
 # initialize the working directory for the final project
 jim_dir = "/Users/jimgrund/Documents/GWU/Bayesian_Methods/Final-Project/"
 akash_dir = "C:/Users/akash/Desktop/GWU/6450_Bayesian_YHuang/project/project"
@@ -50,7 +51,10 @@ for (directory in c(akash_dir, jim_dir, patrick_dir)) {
 source("DBDA2E-utilities.R")
 #===============================================================================
 
-#' ### Load the csv 
+#' ## Data Load & Tidy
+
+#' ### Load Data
+
 # Load the csv into a dataframe and return that dataframe
 # Params:  filename of the csv to load
 # Returns: dataframe containing the data
@@ -60,10 +64,9 @@ LoadData = function(filename) {
 }
 
 
-#' ### GLM Feature Importance
+#' ### Feature Importance
 
-#' # Random Forest Feature Importance
-#
+# Random Forest Feature Importance
 RFFeatureImportance = function(data) {
   transdf <- subset(data, select = c(2:32)) 
   transdf <- transdf[complete.cases(transdf),]
@@ -77,43 +80,41 @@ RFFeatureImportance = function(data) {
 }
 
 
-#' ### Bin the parameters
+#' ### Bin the Parameters
+
 # Create equally distributed bins for the parameters we're interested in
 # Params: dataframe of data
 BinData = function(df) {
-  #' ### Bin Radius_mean
+  #' # Radius_mean
   # create three bins using 0, 12.25, 14.75, 30 as the breakpoints.  
   df$radius_bin <- cut(df$radius_mean, breaks = c(0, 12.25, 14.75, 30), labels = 1:3)
   
-  #' ### Bin Area_mean
+  #' # Area_mean
   # create three bins on area_mean using 0, 463, 680, 2600 as the breakpoints.  
   df$area_bin <- cut(df$area_mean, breaks = c(0, 463, 680, 2600), labels = 1:3)
   
-  #' ### Bin Compactness_mean
+  #' # Compactness_mean
   # create three bins on compactness_mean using 0, 0.075, 0.117, 0.5 as the breakpoints.  
   df$compactness_bin <- cut(df$compactness_mean, breaks = c(0, 0.075, 0.117, 0.5), labels = 1:3)
   
-  #' ### Smoothness_mean
+  #' # Smoothness_mean
   # create three bins on smoothness_mean using 0, 0.0894, 0.102, 0.17 as the breakpoints.  
   df$smoothness_bin <- cut(df$smoothness_mean, breaks = c(0, 0.0894, 0.102, 0.17), labels = 1:3)
   
-  #' ### Concavity_mean
+  #' # Concavity_mean
   # create three bins on concavity_mean using 0, 0.039, 0.106, 0.43 as the breakpoints.  
   df$concavity_bin <- cut(df$concavity_mean, breaks = c(0, 0.039, 0.106, 0.43), labels = 1:3)
   
-  #' #' ### CONCAVE.POINTS_MEAN BIN
-  #' # create three bins on concavity_mean using 0, 0.025, 0.06, 0.25 as the breakpoints.  
-  #' df$concave.points_bin <- cut(df$concave.points_mean, breaks = c(0, 0.025, 0.06, 0.25), labels = 1:3)
-  
-  #' ### SYMMETRY_MEAN BIN
-  # create three bins on concavity_mean using 0, 0.167, 0.19, 0.35 as the breakpoints.  
+  #' # Symmetry_mean 
+  # create three bins on Symmetry_mean using 0, 0.167, 0.19, 0.35 as the breakpoints.  
   df$symmetry_bin <- cut(df$symmetry_mean, breaks = c(0, 0.167, 0.19, 0.35), labels = 1:3)
   
   return(df)
 }
 
 
-#' ### Plot histogram
+#' ### Plot Stacked Histogram
+
 # Plot a stacked histogram to show ratio of malignant to benign in each bin
 # Params: dataframe, column to hist on
 PlotHistogram = function(df, param) {
@@ -134,7 +135,10 @@ PlotHistogram = function(df, param) {
 
 
 
-#' genMCMC 
+#' ## MCMC
+
+#' ### Generate  
+
 # returns coda data
 genMCMC = function( data , zName="z" , NName="N" , sName="s" , cName="c" ,
                     numSavedSteps=50000 , saveName=NULL , thinSteps=1 ,
@@ -252,7 +256,7 @@ genMCMC = function( data , zName="z" , NName="N" , sName="s" , cName="c" ,
 #===============================================================================
 
 
-#' smryMCMC
+#' ### Summary Statistics 
 # returns summary output of coda
 smryMCMC = function(  codaSamples , compVal=0.5 , rope=NULL , 
                       diffSVec=NULL , diffCVec=NULL , 
@@ -325,7 +329,8 @@ smryMCMC = function(  codaSamples , compVal=0.5 , rope=NULL ,
 
 #===============================================================================
 
-#' plotMCMC
+#' ### Plot Results
+
 # plot the analysis of the coda data
 plotMCMC = function( codaSamples , 
                      data , zName="z" , NName="N" , sName="s" , cName="c" ,
