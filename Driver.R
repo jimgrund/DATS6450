@@ -1,5 +1,4 @@
 
-
 #' ---
 #' title: 6450 BayesianMethods Project (Driver File)
 #' author: TeamPAJ
@@ -65,7 +64,7 @@ myData = LoadData(filename)
 #' ### Feature Importance
 rf_fi = RFFeatureImportance(myData) # Run Feature Importance to identify which features to analyze
 
-#' ### Bins
+#' ### Bin the Parameters
 myData = BinData(myData) # Bin the various columns that we may want to model with
 
 #' ### Test Count
@@ -127,7 +126,7 @@ for ( parName in c("omega[1]","omegaO","kappa[1]","kappaO","theta[1]") ) {
 #                         compValDiff=0.0 , saveName=fileNameRoot )
 
 
-#' ### Graph
+#' ### Plot Results
 
 # Display posterior information:
 plotMCMC( mcmcCoda , data=myData ,
