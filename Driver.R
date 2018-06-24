@@ -1,7 +1,7 @@
 
 #' ---
 #' title: 6450 BayesianMethods Project (Driver File)
-#' author: TeamPAJ
+#' author: TeamPAJ (P.Jordan, A.Jassal, J.Imgrund)
 #' date: 25June2018
 #' output:
 #'    html_document:
